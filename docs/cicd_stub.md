@@ -49,20 +49,54 @@ Purpose:
 
 Prove that the shared environment still supports the full MVP query path and operational checks.
 
-### 3. Future Deployment Stage
+### 3. Lambda Deployment Stage
 
-Not implemented yet. Recommended deployment slices are:
+Run on `workflow_dispatch` through `.github/workflows/deploy_lambdas.yml`.
 
-1. Lambda packaging and deployment.
-2. Databricks SQL and job promotion.
-3. Post-deploy smoke validation.
+Checks and actions:
+
+1. Re-run compile and unit-test validation before deployment.
+2. Package `lambdas/producer/handler.py` and `lambdas/consumer/handler.py` into deployment zips.
+3. Update the configured AWS Lambda functions.
+4. Run the post-deploy smoke and operational health gate.
+
+Required secrets:
+
+1. `AWS_ACCESS_KEY_ID`
+2. `AWS_SECRET_ACCESS_KEY`
+3. `AWS_REGION`
+
+Manual inputs:
+
+1. `deploy_producer`
+2. `deploy_consumer`
+3. `run_post_deploy_smoke`
+4. `skip_ingest`
+5. `max_silver_delay_minutes`
+6. `max_quarantine_count`
+7. `lambda_name_prefix`
+8. `lambda_environment`
+
+Purpose:
+
+Promote Lambda code only after validation, then prove the shared environment still passes the functional and operational gates.
+
+The workflow resolves the producer and consumer Lambda names at runtime by searching AWS for function names that match the pattern `<lambda_name_prefix>-<lambda_environment>-producer` and `<lambda_name_prefix>-<lambda_environment>-consumer`.
+
+### 4. Future Databricks Deployment Stage
+
+Not implemented yet. Recommended next slice:
+
+1. Databricks SQL and job promotion.
+2. Post-deploy smoke validation.
 
 ## Recommended Promotion Flow
 
 1. Developer runs local smoke and ops checks.
 2. Pull request passes compile and unit-test validation.
 3. Manual smoke validation runs against the shared environment.
-4. Only then promote Lambda, Databricks, and docs changes.
+4. Run the Lambda deployment workflow.
+5. Only then promote Databricks and broader environment changes.
 
 ## Repository Entry Points
 
@@ -70,6 +104,7 @@ Not implemented yet. Recommended deployment slices are:
 2. PowerShell smoke runner: `tools/run_mvp_smoke.ps1`
 3. Operational health probe: `tools/ops_health_check.py`
 4. Functional verifier: `tools/mvp_verify.py`
+5. Lambda deployment workflow: `.github/workflows/deploy_lambdas.yml`
 
 ## Notes
 

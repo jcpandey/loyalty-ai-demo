@@ -1,0 +1,248 @@
+name: Deploy Lambdas
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_producer:
+        description: Deploy the producer Lambda
+        required: true
+        default: true
+        type: boolean
+      deploy_consumer:
+        description: Deploy the consumer Lambda
+        required: true
+        default: true
+        type: boolean
+      run_post_deploy_smoke:
+        description: Run the shared smoke and ops gates after deployment
+        required: true
+        default: true
+        type: boolean
+      skip_ingest:
+        description: Skip RAG ingest during the post-deploy smoke gate
+        required: true
+        default: true
+        type: boolean
+      max_silver_delay_minutes:
+        description: Operational health threshold for Silver freshness delay
+        required: true
+        default: '10080'
+        type: string
+      max_quarantine_count:
+        description: Operational health threshold for quarantine row count
+        required: true
+        default: '10'
+        type: string
+      lambda_name_prefix:
+        description: Prefix used to discover producer and consumer Lambda function names
+        required: true
+        default: 'loyalty-ai-demo'
+        type: string
+      lambda_environment:
+        description: Environment segment used in Lambda names such as dev, test, or prod
+        required: true
+        default: 'dev'
+        type: string
+
+jobs:
+  pre-deploy-validation:
+    name: Pre-Deploy Validation
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Compile Python Sources
+        shell: pwsh
+        run: python -m compileall simulator lambdas rag tests tools
+
+      - name: Run Unit Tests
+        shell: pwsh
+        run: python -m pytest -q
+
+  deploy-lambdas:
+    name: Deploy Producer And Consumer
+    runs-on: windows-latest
+    needs: pre-deploy-validation
+    environment: poc-shared
+
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      LAMBDA_NAME_PREFIX: ${{ github.event.inputs.lambda_name_prefix }}
+      LAMBDA_ENVIRONMENT: ${{ github.event.inputs.lambda_environment }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Deployment Inputs
+        shell: pwsh
+        run: |
+          $required = @('AWS_REGION')
+          if ('${{ github.event.inputs.deploy_producer }}' -ne 'true' -and '${{ github.event.inputs.deploy_consumer }}' -ne 'true') {
+            throw 'At least one of deploy_producer or deploy_consumer must be true.'
+          }
+          $missing = @()
+          foreach ($name in $required) {
+            $value = [Environment]::GetEnvironmentVariable($name)
+            if ([string]::IsNullOrWhiteSpace($value)) {
+              $missing += $name
+            }
+          }
+          if ($missing.Count -gt 0) {
+            throw "Missing required deployment configuration: $($missing -join ', ')"
+          }
+          if ([string]::IsNullOrWhiteSpace($env:LAMBDA_NAME_PREFIX)) {
+            throw 'lambda_name_prefix must not be empty.'
+          }
+          if ([string]::IsNullOrWhiteSpace($env:LAMBDA_ENVIRONMENT)) {
+            throw 'lambda_environment must not be empty.'
+          }
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Resolve Lambda Function Names
+        shell: pwsh
+        run: |
+          function Resolve-LambdaName {
+            param(
+              [string]$Prefix,
+              [string]$Environment,
+              [string]$RoleToken
+            )
+
+            $expectedPattern = "$Prefix-$Environment-$RoleToken"
+            $matches = aws lambda list-functions --query "Functions[?contains(FunctionName, '$expectedPattern')].FunctionName" --output json | ConvertFrom-Json
+            if ($null -eq $matches) {
+              $matches = @()
+            }
+            if ($matches.Count -eq 0) {
+              throw "No Lambda function found for naming pattern '$expectedPattern'."
+            }
+            if ($matches.Count -gt 1) {
+              throw "Multiple Lambda functions matched naming pattern '$expectedPattern': $($matches -join ', ')"
+            }
+            return $matches[0]
+          }
+
+          if ('${{ github.event.inputs.deploy_producer }}' -eq 'true') {
+            $producerName = Resolve-LambdaName -Prefix $env:LAMBDA_NAME_PREFIX -Environment $env:LAMBDA_ENVIRONMENT -RoleToken 'producer'
+            "PRODUCER_LAMBDA_FUNCTION_NAME=$producerName" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            Write-Host "Resolved producer Lambda: $producerName"
+          }
+
+          if ('${{ github.event.inputs.deploy_consumer }}' -eq 'true') {
+            $consumerName = Resolve-LambdaName -Prefix $env:LAMBDA_NAME_PREFIX -Environment $env:LAMBDA_ENVIRONMENT -RoleToken 'consumer'
+            "CONSUMER_LAMBDA_FUNCTION_NAME=$consumerName" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            Write-Host "Resolved consumer Lambda: $consumerName"
+          }
+
+      - name: Package Producer Lambda
+        if: github.event.inputs.deploy_producer == 'true'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          Compress-Archive -Path .\lambdas\producer\handler.py -DestinationPath .\artifacts\producer.zip -Force
+
+      - name: Deploy Producer Lambda
+        if: github.event.inputs.deploy_producer == 'true'
+        shell: pwsh
+        run: |
+          aws lambda update-function-code --function-name "$env:PRODUCER_LAMBDA_FUNCTION_NAME" --zip-file fileb://artifacts/producer.zip
+          aws lambda wait function-updated --function-name "$env:PRODUCER_LAMBDA_FUNCTION_NAME"
+
+      - name: Package Consumer Lambda
+        if: github.event.inputs.deploy_consumer == 'true'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          Compress-Archive -Path .\lambdas\consumer\handler.py -DestinationPath .\artifacts\consumer.zip -Force
+
+      - name: Deploy Consumer Lambda
+        if: github.event.inputs.deploy_consumer == 'true'
+        shell: pwsh
+        run: |
+          aws lambda update-function-code --function-name "$env:CONSUMER_LAMBDA_FUNCTION_NAME" --zip-file fileb://artifacts/consumer.zip
+          aws lambda wait function-updated --function-name "$env:CONSUMER_LAMBDA_FUNCTION_NAME"
+
+  post-deploy-smoke:
+    name: Post-Deploy Smoke Validation
+    runs-on: windows-latest
+    needs: deploy-lambdas
+    if: github.event.inputs.run_post_deploy_smoke == 'true'
+    environment: poc-shared
+
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_CHAT_MODEL: ${{ secrets.OPENAI_CHAT_MODEL }}
+      DATABRICKS_SERVER_HOSTNAME: ${{ secrets.DATABRICKS_SERVER_HOSTNAME }}
+      DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      OPENAI_TLS_NO_VERIFY: 'true'
+      DATABRICKS_SQL_TLS_NO_VERIFY: 'true'
+      OPS_MAX_SILVER_DELAY_MINUTES: ${{ github.event.inputs.max_silver_delay_minutes }}
+      OPS_MAX_QUARANTINE_COUNT: ${{ github.event.inputs.max_quarantine_count }}
+      PYTHON_EXE: python
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Validate Shared Smoke Secrets
+        shell: pwsh
+        run: |
+          $required = @(
+            'OPENAI_API_KEY',
+            'OPENAI_CHAT_MODEL',
+            'DATABRICKS_SERVER_HOSTNAME',
+            'DATABRICKS_HTTP_PATH',
+            'DATABRICKS_TOKEN'
+          )
+          $missing = @()
+          foreach ($name in $required) {
+            $value = [Environment]::GetEnvironmentVariable($name)
+            if ([string]::IsNullOrWhiteSpace($value)) {
+              $missing += $name
+            }
+          }
+          if ($missing.Count -gt 0) {
+            throw "Missing required post-deploy smoke secrets: $($missing -join ', ')"
+          }
+
+      - name: Run Post-Deploy Smoke Gate
+        shell: pwsh
+        run: |
+          if ('${{ github.event.inputs.skip_ingest }}' -eq 'false') {
+            powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\run_mvp_smoke.ps1 -PythonExe python
+          }
+          else {
+            powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\run_mvp_smoke.ps1 -SkipIngest -PythonExe python
+          }

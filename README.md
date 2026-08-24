@@ -64,3 +64,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\run_mvp_smoke.ps1 -S
 See `docs/cicd_stub.md` for the staged pipeline outline and `.github/workflows/validation.yml` for the starter automation.
 
 For GitHub environment and secret setup, see `docs/github_actions_setup.md`.
+
+The first deployment automation slice is `.github/workflows/deploy_lambdas.yml`, which packages and deploys the producer and consumer Lambdas and then runs the post-deploy smoke gate.
