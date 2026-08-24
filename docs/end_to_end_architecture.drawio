@@ -1,0 +1,214 @@
+<mxfile host="app.diagrams.net" agent="GitHub Copilot">
+  <diagram id="loyalty-arch" name="End to End Architecture">
+    <mxGraphModel dx="1945" dy="914" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1440" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f2937;strokeColor=#111827;fontColor=#ffffff;fontSize=22;fontStyle=1;" value="Synthetic Loyalty Platform: End-to-End AWS + Databricks + OpenAI Architecture" vertex="1">
+          <mxGeometry height="50" width="1580" x="20" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cicd" parent="1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontStyle=1;startSize=30;" value="CI/CD and Platform Engineering" vertex="1">
+          <mxGeometry height="120" width="1580" x="20" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="repo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0284c7;" value="Source Repo&#xa;Python, SQL, Lambda, docs, draw.io" vertex="1">
+          <mxGeometry height="55" width="180" x="60" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ci" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0284c7;" value="CI Pipeline&#xa;lint, tests, security scan, package build" vertex="1">
+          <mxGeometry height="55" width="220" x="290" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="cdaws" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0284c7;" value="CD Pipeline to AWS&#xa;IAM, API Gateway, Lambda, Kinesis, S3, monitoring" vertex="1">
+          <mxGeometry height="55" width="280" x="590" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="cddbx" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0284c7;" value="CD Pipeline to Databricks&#xa;Unity Catalog, Lakeflow Jobs, notebooks, SQL, grants" vertex="1">
+          <mxGeometry height="55" width="300" x="930" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="platformnote" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#7dd3fc;dashed=1;" value="Optional IaC: Terraform / GitHub Actions / Azure DevOps / Databricks Asset Bundles" vertex="1">
+          <mxGeometry height="55" width="270" x="1290" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="devbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=#6b7280;fontStyle=1;" value="VS Code / Local Engineering&#xa;Synthetic event simulator&#xa;Assistant client&#xa;Manual validation and ops" vertex="1">
+          <mxGeometry height="120" width="170" x="20" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="awsacct" parent="1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;fillColor=#fff7ed;strokeColor=#f97316;fontStyle=1;startSize=36;" value="AWS Workload Account" vertex="1">
+          <mxGeometry height="760" width="570" x="210" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="awsicon" parent="1" style="shape=image;imageAspect=0;aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;image=https://cdn.simpleicons.org/amazonaws/FF9900;" value="AWS" vertex="1">
+          <mxGeometry height="36" width="36" x="225" y="242" as="geometry" />
+        </mxCell>
+        <mxCell id="awsvpc" parent="1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;fillColor=#fffbeb;strokeColor=#f59e0b;fontStyle=1;startSize=34;" value="VPC Boundary&#xa;Public ingress, private processing, VPC endpoints / NAT, security groups" vertex="1">
+          <mxGeometry height="610" width="520" x="235" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="apigw" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f59e0b;" value="Amazon API Gateway&#xa;Public producer API" vertex="1">
+          <mxGeometry height="60" width="160" x="265" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="lambdaProducer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f59e0b;" value="Lambda Producer&#xa;validation, enrichment, idempotency guard" vertex="1">
+          <mxGeometry height="70" width="160" x="265" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="kinesis" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f59e0b;" value="Kinesis Data Stream&#xa;real-time event backbone" vertex="1">
+          <mxGeometry height="60" width="160" x="265" y="565" as="geometry" />
+        </mxCell>
+        <mxCell id="lambdaConsumer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f59e0b;" value="Lambda Consumer&#xa;batch records to JSONL / gzip" vertex="1">
+          <mxGeometry height="70" width="160" x="265" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="s3landing" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f59e0b;" value="Amazon S3 landing/events/&#xa;raw event files" vertex="1">
+          <mxGeometry height="70" width="220" x="470" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="s3meta" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f59e0b;" value="S3 checkpoints / schema / metadata&#xa;Auto Loader state and managed paths" vertex="1">
+          <mxGeometry height="70" width="220" x="470" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudwatch" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#f59e0b;" value="CloudWatch / Alarms / Logs&#xa;pipeline monitoring and alerting" vertex="1">
+          <mxGeometry height="70" width="220" x="470" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="awsnote" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#fb7185;dashed=1;" value="Optional private ingress via WAF, custom domain, Cognito or IAM auth" vertex="1">
+          <mxGeometry height="55" width="425" x="265" y="785" as="geometry" />
+        </mxCell>
+        <mxCell id="dbxacct" parent="1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;fillColor=#fff1f2;strokeColor=#ef4444;fontStyle=1;startSize=36;" value="Databricks on AWS" vertex="1">
+          <mxGeometry height="760" width="780" x="820" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="dbxicon" parent="1" style="shape=image;imageAspect=0;aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;image=https://cdn.simpleicons.org/databricks/EF4444;" value="Databricks" vertex="1">
+          <mxGeometry height="36" width="36" x="835" y="242" as="geometry" />
+        </mxCell>
+        <mxCell id="dbxvpc" parent="1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;fillColor=#fffaf0;strokeColor=#f97316;fontStyle=1;startSize=34;" value="Workspace VPC / Private Connectivity" vertex="1">
+          <mxGeometry height="610" width="730" x="845" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="unitycatalog" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;fontStyle=1;" value="Unity Catalog Data Governance&#xa;catalogs, schemas, lineage, grants, row/column security, storage credentials, external locations" vertex="1">
+          <mxGeometry height="65" width="670" x="875" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="lakeflow" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ef4444;" value="Lakeflow Jobs / Workflows&#xa;Auto Loader trigger, Bronze, Silver, Gold, quality checks, scheduling" vertex="1">
+          <mxGeometry height="70" width="220" x="875" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="storagecred" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ef4444;" value="Storage Credential + External Locations&#xa;cross-account assume role to S3" vertex="1">
+          <mxGeometry height="70" width="220" x="875" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="bronze" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontStyle=1;" value="Bronze Delta&#xa;raw events" vertex="1">
+          <mxGeometry height="60" width="120" x="1140" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="silver" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e5e7eb;strokeColor=#6b7280;fontStyle=1;" value="Silver Delta&#xa;validated / deduped" vertex="1">
+          <mxGeometry height="60" width="130" x="1300" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="gold" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#ca8a04;fontStyle=1;" value="Gold Tables / Views&#xa;aggregates and KPIs" vertex="1">
+          <mxGeometry height="60" width="105" x="1470" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="quality" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ef4444;" value="Data Quality Checks&#xa;freshness, reconciliation, quarantine" vertex="1">
+          <mxGeometry height="65" width="170" x="1140" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="sqlwarehouse" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ef4444;" value="Databricks SQL Warehouse&#xa;live structured facts for assistant" vertex="1">
+          <mxGeometry height="65" width="225" x="1350" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="dbxops" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ef4444;" value="Notebooks / SQL / MLflow / dashboards&#xa;analyst and engineer access" vertex="1">
+          <mxGeometry height="65" width="435" x="1140" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="crossaccount" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfeff;strokeColor=#0891b2;dashed=1;fontStyle=1;" value="Cross-account connectivity&#xa;IAM AssumeRole + Unity Catalog storage credential + external locations&#xa;Optional PrivateLink / transit / egress controls" vertex="1">
+          <mxGeometry height="75" width="510" x="935" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="raglane" parent="1" style="swimlane;whiteSpace=wrap;html=1;rounded=1;fillColor=#ecfccb;strokeColor=#65a30d;fontStyle=1;startSize=36;" value="Hybrid RAG and Consumption Layer" vertex="1">
+          <mxGeometry height="250" width="1580" x="20" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="docsbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#65a30d;" value="Knowledge sources&#xa;policy docs&#xa;runbooks&#xa;event contract&#xa;architecture overview&#xa;implementation guide" vertex="1">
+          <mxGeometry height="130" width="220" x="60" y="1075" as="geometry" />
+        </mxCell>
+        <mxCell id="ingestbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#65a30d;" value="RAG ingest job&#xa;chunking + OpenAI embeddings&#xa;scheduled refresh from CI/CD or manual run" vertex="1">
+          <mxGeometry height="90" width="230" x="340" y="1095" as="geometry" />
+        </mxCell>
+        <mxCell id="vectorbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#65a30d;" value="Chroma Vector Store&#xa;local learning mode&#xa;Optional Databricks Vector Search for enterprise" vertex="1">
+          <mxGeometry height="90" width="250" x="640" y="1095" as="geometry" />
+        </mxCell>
+        <mxCell id="assistantbox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#65a30d;fontStyle=1;" value="Python Hybrid Assistant in VS Code&#xa;combines Databricks SQL facts + RAG context" vertex="1">
+          <mxGeometry height="90" width="250" x="980" y="1095" as="geometry" />
+        </mxCell>
+        <mxCell id="openaiicon" parent="1" style="shape=image;imageAspect=0;aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;image=https://cdn.simpleicons.org/openai/111827;" value="OpenAI" vertex="1">
+          <mxGeometry height="42" width="42" x="1320" y="1075" as="geometry" />
+        </mxCell>
+        <mxCell id="openaibox" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111827;fontStyle=1;" value="OpenAI API&#xa;embeddings + chat completions" vertex="1">
+          <mxGeometry height="90" width="220" x="1290" y="1095" as="geometry" />
+        </mxCell>
+        <mxCell id="ragnote" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#f97316;dashed=1;" value="Security note: replace temporary TLS no-verify settings with trusted enterprise CA bundles before production use" vertex="1">
+          <mxGeometry height="35" width="540" x="520" y="1210" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="repo" style="endArrow=block;html=1;rounded=0;strokeColor=#0284c7;" target="ci" value="commit / PR">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="ci" style="endArrow=block;html=1;rounded=0;strokeColor=#0284c7;" target="cdaws" value="build artifacts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="ci" style="endArrow=block;html=1;rounded=0;strokeColor=#0284c7;" target="cddbx" value="bundle / jobs / SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="cdaws" style="endArrow=block;html=1;rounded=0;strokeColor=#0284c7;" target="awsacct" value="deploy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="cddbx" style="endArrow=block;html=1;rounded=0;strokeColor=#0284c7;" target="dbxacct" value="deploy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="devbox" style="endArrow=block;html=1;rounded=0;strokeColor=#6b7280;" target="apigw" value="HTTPS POST">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="apigw" style="endArrow=block;html=1;rounded=0;strokeColor=#f59e0b;" target="lambdaProducer" value="invoke">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="lambdaProducer" style="endArrow=block;html=1;rounded=0;strokeColor=#f59e0b;" target="kinesis" value="put records">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="kinesis" style="endArrow=block;html=1;rounded=0;strokeColor=#f59e0b;" target="lambdaConsumer" value="event source mapping">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="lambdaConsumer" style="endArrow=block;html=1;rounded=0;strokeColor=#f59e0b;" target="s3landing" value="batched JSONL / gzip">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="lambdaProducer" style="endArrow=block;html=1;rounded=0;strokeColor=#f59e0b;dashed=1;" target="cloudwatch" value="logs / metrics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="lambdaConsumer" style="endArrow=block;html=1;rounded=0;strokeColor=#f59e0b;dashed=1;" target="cloudwatch" value="logs / alarms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="s3landing" style="endArrow=block;html=1;rounded=0;strokeColor=#0891b2;strokeWidth=2;" target="storagecred" value="cross-account read / write">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="s3meta" style="endArrow=block;html=1;rounded=0;strokeColor=#0891b2;strokeWidth=2;" target="storagecred" value="managed paths">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="lakeflow" style="endArrow=block;html=1;rounded=0;strokeColor=#ef4444;" target="bronze" value="schedule / trigger">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="bronze" style="endArrow=block;html=1;rounded=0;strokeColor=#ef4444;" target="silver" value="validate / dedupe">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="silver" style="endArrow=block;html=1;rounded=0;strokeColor=#ef4444;" target="gold" value="aggregate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="unitycatalog" style="endArrow=block;html=1;rounded=0;strokeColor=#dc2626;dashed=1;" target="bronze" value="govern">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" source="unitycatalog" style="endArrow=block;html=1;rounded=0;strokeColor=#dc2626;dashed=1;" target="silver" value="govern">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e20" edge="1" parent="1" source="unitycatalog" style="endArrow=block;html=1;rounded=0;strokeColor=#dc2626;dashed=1;" target="gold" value="govern">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="1" source="lakeflow" style="endArrow=block;html=1;rounded=0;strokeColor=#ef4444;dashed=1;" target="quality" value="quality gates">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e22" edge="1" parent="1" source="gold" style="endArrow=block;html=1;rounded=0;strokeColor=#ef4444;" target="sqlwarehouse" value="serve facts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e23" edge="1" parent="1" source="docsbox" style="endArrow=block;html=1;rounded=0;strokeColor=#65a30d;" target="ingestbox" value="load markdown / guide">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e24" edge="1" parent="1" source="ingestbox" style="endArrow=block;html=1;rounded=0;strokeColor=#65a30d;" target="vectorbox" value="embed + store">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e25" edge="1" parent="1" source="vectorbox" style="endArrow=block;html=1;rounded=0;strokeColor=#65a30d;" target="assistantbox" value="semantic context">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e26" edge="1" parent="1" source="assistantbox" style="endArrow=block;html=1;rounded=0;strokeColor=#111827;" target="openaibox" value="hybrid answer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e27" edge="1" parent="1" source="sqlwarehouse" style="endArrow=block;html=1;rounded=0;strokeColor=#ef4444;strokeWidth=2;" target="assistantbox" value="SQL facts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e28" edge="1" parent="1" source="devbox" style="endArrow=block;html=1;rounded=0;strokeColor=#6b7280;" target="assistantbox" value="operator queries">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

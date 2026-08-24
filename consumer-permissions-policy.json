@@ -1,0 +1,26 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadFromKinesisStream",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kinesis:DescribeStreamSummary",
+        "kinesis:GetRecords",
+        "kinesis:GetShardIterator",
+        "kinesis:ListShards",
+        "kinesis:SubscribeToShard"
+      ],
+      "Resource": "arn:aws:kinesis:ap-southeast-2:829742257446:stream/loyalty-ai-demo-events"
+    },
+    {
+      "Sid": "WriteLandingFilesToS3",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::loyalty-ai-demo-829742257446-ap-southeast-2/landing/events/*"
+    }
+  ]
+}

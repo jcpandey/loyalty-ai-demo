@@ -1,0 +1,172 @@
+<mxfile host="app.diagrams.net" agent="GitHub Copilot">
+  <diagram id="linkedin-arch" name="LinkedIn Simple Architecture">
+    <mxGraphModel dx="1740" dy="818" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#e2e8f0;" value="" vertex="1">
+          <mxGeometry height="780" width="1490" x="20" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="title" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#111827;strokeColor=#0f172a;fontColor=#ffffff;fontSize=24;fontStyle=1;" value="Real-Time Loyalty Lakehouse + AI Assistant" vertex="1">
+          <mxGeometry height="60" width="1340" x="80" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontColor=#0f172a;fontSize=14;" value="AWS ingestion + Databricks lakehouse + OpenAI-powered hybrid assistant" vertex="1">
+          <mxGeometry height="40" width="1150" x="220" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pill1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#60a5fa;fontColor=#1e3a8a;fontSize=12;fontStyle=1;" value="Streaming" vertex="1">
+          <mxGeometry height="26" width="90" x="360" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="pill2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#f87171;fontColor=#7f1d1d;fontSize=12;fontStyle=1;" value="Lakehouse" vertex="1">
+          <mxGeometry height="26" width="90" x="470" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="pill3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#fbbf24;fontColor=#78350f;fontSize=12;fontStyle=1;" value="Governance" vertex="1">
+          <mxGeometry height="26" width="95" x="580" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="pill4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#4ade80;fontColor=#14532d;fontSize=12;fontStyle=1;" value="Hybrid AI" vertex="1">
+          <mxGeometry height="26" width="90" x="695" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="step1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontStyle=1;shadow=1;" value="1. Generate Events&#xa;Synthetic loyalty transactions from VS Code" vertex="1">
+          <mxGeometry height="120" width="190" x="50" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="step2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#f97316;fontStyle=1;shadow=1;" value="2. Ingest on AWS&#xa;API Gateway → Lambda → Kinesis → S3" vertex="1">
+          <mxGeometry height="120" width="235" x="320" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="step3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#ef4444;fontStyle=1;shadow=1;" value="3. Process in Databricks&#xa;Auto Loader → Bronze → Silver → Gold" vertex="1">
+          <mxGeometry height="120" width="245" x="610" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="step4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontStyle=1;shadow=1;" value="4. Govern the Data&#xa;Unity Catalog + quality checks + Lakeflow jobs" vertex="1">
+          <mxGeometry height="120" width="250" x="920" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="step5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfccb;strokeColor=#65a30d;fontStyle=1;shadow=1;" value="5. Answer with AI&#xa;RAG docs + Databricks SQL + OpenAI" vertex="1">
+          <mxGeometry height="120" width="190" x="1248" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="vsicon" parent="1" style="shape=image;imageAspect=0;aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;image=https://cdn.simpleicons.org/visualstudiocode/007ACC;" value="&lt;b&gt;VS Code&lt;/b&gt;" vertex="1">
+          <mxGeometry height="42" width="42" x="110" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="awsicon" parent="1" style="shape=image;imageAspect=0;aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;image=https://cdn.simpleicons.org/amazonaws/FF9900;" value="AWS" vertex="1">
+          <mxGeometry height="44" width="44" x="391" y="346" as="geometry" />
+        </mxCell>
+        <mxCell id="dbxicon" parent="1" style="shape=image;imageAspect=0;aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;image=https://cdn.simpleicons.org/databricks/EF4444;" value="Databricks" vertex="1">
+          <mxGeometry height="44" width="44" x="678" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="ucicon" parent="1" style="shape=image;imageAspect=0;aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;fontSize=11;image=https://cdn.simpleicons.org/databricks/EF4444;" value="Unity Catalog" vertex="1">
+          <mxGeometry height="44" width="44" x="974" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="openaiicon" parent="1" style="shape=image;imageAspect=0;aspect=fixed;html=1;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;image=https://cdn.simpleicons.org/openai/111827;" value="OpenAI" vertex="1">
+          <mxGeometry height="44" width="44" x="1326" y="352" as="geometry" />
+        </mxCell>
+        <mxCell id="sub11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;fontSize=11;" value="Python simulator" vertex="1">
+          <mxGeometry height="22" width="72" x="60" y="304" as="geometry" />
+        </mxCell>
+        <mxCell id="sub12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;fontSize=11;" value="Synthetic schema" vertex="1">
+          <mxGeometry height="22" width="82" x="140" y="304" as="geometry" />
+        </mxCell>
+        <mxCell id="sub21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fdba74;fontSize=11;" value="API" vertex="1">
+          <mxGeometry height="22" width="40" x="330" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="sub22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fdba74;fontSize=11;" value="Lambda" vertex="1">
+          <mxGeometry height="22" width="60" x="375" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="sub23" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fdba74;fontSize=11;" value="Kinesis" vertex="1">
+          <mxGeometry height="22" width="58" x="450" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="sub24" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fdba74;fontSize=11;" value="S3" vertex="1">
+          <mxGeometry height="22" width="25" x="520" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="sub31" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fca5a5;fontSize=11;" value="Auto Loader" vertex="1">
+          <mxGeometry height="22" width="78" x="617" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="sub32" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontSize=11;" value="Bronze" vertex="1">
+          <mxGeometry height="22" width="55" x="695" y="304" as="geometry" />
+        </mxCell>
+        <mxCell id="sub33" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#94a3b8;fontSize=11;" value="Silver" vertex="1">
+          <mxGeometry height="22" width="50" x="750" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="sub34" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#eab308;fontSize=11;" value="Gold" vertex="1">
+          <mxGeometry height="22" width="40" x="799" y="304" as="geometry" />
+        </mxCell>
+        <mxCell id="sub41" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fbbf24;fontSize=11;" value="Lakeflow Jobs" vertex="1">
+          <mxGeometry height="22" width="86" x="920" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="sub42" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fbbf24;fontSize=11;" value="Quality" vertex="1">
+          <mxGeometry height="22" width="50" x="1018" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="sub43" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fbbf24;fontSize=11;" value="Unity Catalog" vertex="1">
+          <mxGeometry height="22" width="76" x="1080" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="sub51" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#86efac;fontSize=11;" value="RAG" vertex="1">
+          <mxGeometry height="22" width="36" x="1280" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="sub52" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#86efac;fontSize=11;" value="SQL" vertex="1">
+          <mxGeometry height="22" width="35" x="1335" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="sub53" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#86efac;fontSize=11;" value="OpenAI" vertex="1">
+          <mxGeometry height="22" width="52" x="1380" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" edge="1" parent="1" source="step1" style="endArrow=block;html=1;rounded=0;strokeColor=#94a3b8;strokeWidth=2;" target="step2" value="stream events">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" edge="1" parent="1" source="step2" style="endArrow=block;html=1;rounded=0;strokeColor=#94a3b8;strokeWidth=2;" target="step3" value="raw data">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" edge="1" parent="1" source="step3" style="endArrow=block;html=1;rounded=0;strokeColor=#94a3b8;strokeWidth=2;" target="step4" value="trusted data">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" edge="1" parent="1" source="step4" style="endArrow=block;html=1;rounded=0;strokeColor=#94a3b8;strokeWidth=2;" target="step5" value="business facts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="section2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#0f172a;fontColor=#ffffff;fontSize=16;fontStyle=1;" value="Why the assistant works" vertex="1">
+          <mxGeometry height="36" width="1280" x="60" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="sqlfacts" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ef4444;shadow=1;" value="Live SQL Facts&#xa;member balances&#xa;partner metrics&#xa;freshness and operations" vertex="1">
+          <mxGeometry height="105" width="220" x="200" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="ragdocs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#65a30d;shadow=1;" value="Knowledge Base&#xa;policies&#xa;runbooks&#xa;implementation guide&#xa;architecture docs" vertex="1">
+          <mxGeometry height="105" width="220" x="530" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="assistant" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f172a;fontStyle=1;shadow=1;" value="Hybrid Assistant&#xa;Combines semantic context with live data&#xa;returns explainable answers with sources" vertex="1">
+          <mxGeometry height="105" width="230" x="860" y="523" as="geometry" />
+        </mxCell>
+        <mxCell id="outcomes" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#334155;shadow=1;fontStyle=1;" value="Business outcomes&#xa;Faster support triage&#xa;Trusted analytics&#xa;Governed AI answers" vertex="1">
+          <mxGeometry height="105" width="150" x="1220" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" edge="1" parent="1" source="ragdocs" style="endArrow=block;html=1;rounded=0;strokeColor=#65a30d;strokeWidth=2;" target="assistant" value="RAG">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" edge="1" parent="1" source="sqlfacts" style="endArrow=block;html=1;rounded=0;strokeColor=#ef4444;strokeWidth=2;" target="assistant" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" edge="1" parent="1" source="assistant" style="endArrow=block;html=1;rounded=0;strokeColor=#111827;strokeWidth=2;" target="outcomes" value="generate answer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="guard1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;fontSize=12;" value="Near real-time pipeline" vertex="1">
+          <mxGeometry height="34" width="150" x="250" y="657" as="geometry" />
+        </mxCell>
+        <mxCell id="guard2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;fontSize=12;" value="Governed lakehouse" vertex="1">
+          <mxGeometry height="34" width="150" x="490" y="655" as="geometry" />
+        </mxCell>
+        <mxCell id="guard3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;fontSize=12;" value="Hybrid retrieval" vertex="1">
+          <mxGeometry height="34" width="150" x="689" y="655" as="geometry" />
+        </mxCell>
+        <mxCell id="guard4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;fontSize=12;" value="Explainable AI" vertex="1">
+          <mxGeometry height="34" width="150" x="918" y="657" as="geometry" />
+        </mxCell>
+        <mxCell id="guard5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cbd5e1;fontSize=12;" value="Portfolio-ready architecture" vertex="1">
+          <mxGeometry height="34" width="190" x="1170" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="footer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;fontColor=#334155;fontSize=13;" value="Designed for a portfolio-ready data + AI platform POC: real-time ingestion, governed lakehouse, and explainable AI support assistant" vertex="1">
+          <mxGeometry height="45" width="1040" x="270" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="zlYyo6UwalvnOjkO4adz-3" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/Azure_OpenAI.svg;" value="" vertex="1">
+          <mxGeometry height="50" width="50" x="1323" y="346" as="geometry" />
+        </mxCell>
+        <mxCell id="zlYyo6UwalvnOjkO4adz-4" parent="1" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://icons.diagrams.net/assets/font-awesome/1/AWS_brand.svg" value="" vertex="1">
+          <mxGeometry height="41.6" width="52" x="391" y="348.4" as="geometry" />
+        </mxCell>
+        <mxCell id="zlYyo6UwalvnOjkO4adz-6" parent="1" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://icons.diagrams.net/assets/developer/1/Visual_Studio_Code.svg" value="" vertex="1">
+          <mxGeometry height="44" width="44" x="108" y="349" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

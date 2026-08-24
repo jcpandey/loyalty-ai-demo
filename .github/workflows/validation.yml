@@ -1,0 +1,114 @@
+name: Validation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      skip_ingest:
+        description: Skip RAG document ingest during shared smoke validation
+        required: true
+        default: true
+        type: boolean
+      max_silver_delay_minutes:
+        description: Operational health threshold for Silver freshness delay
+        required: true
+        default: '10080'
+        type: string
+      max_quarantine_count:
+        description: Operational health threshold for quarantine row count
+        required: true
+        default: '10'
+        type: string
+
+jobs:
+  local-validation:
+    name: Compile And Test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Compile Python Sources
+        shell: pwsh
+        run: python -m compileall simulator lambdas rag tests tools
+
+      - name: Run Unit Tests
+        shell: pwsh
+        run: python -m pytest -q
+
+  shared-smoke-validation:
+    name: Shared Smoke Validation
+    runs-on: windows-latest
+    if: github.event_name == 'workflow_dispatch'
+    environment: poc-shared
+
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_CHAT_MODEL: ${{ secrets.OPENAI_CHAT_MODEL }}
+      DATABRICKS_SERVER_HOSTNAME: ${{ secrets.DATABRICKS_SERVER_HOSTNAME }}
+      DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      OPENAI_TLS_NO_VERIFY: 'true'
+      DATABRICKS_SQL_TLS_NO_VERIFY: 'true'
+      OPS_MAX_SILVER_DELAY_MINUTES: ${{ github.event.inputs.max_silver_delay_minutes || '10080' }}
+      OPS_MAX_QUARANTINE_COUNT: ${{ github.event.inputs.max_quarantine_count || '10' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Validate Required Secrets
+        shell: pwsh
+        run: |
+          $required = @(
+            'OPENAI_API_KEY',
+            'OPENAI_CHAT_MODEL',
+            'DATABRICKS_SERVER_HOSTNAME',
+            'DATABRICKS_HTTP_PATH',
+            'DATABRICKS_TOKEN'
+          )
+          $missing = @()
+          foreach ($name in $required) {
+            if ([string]::IsNullOrWhiteSpace((Get-Item -Path "Env:$name").Value)) {
+              $missing += $name
+            }
+          }
+          if ($missing.Count -gt 0) {
+            throw "Missing required shared smoke secrets: $($missing -join ', ')"
+          }
+
+      - name: Run MVP Smoke Gate
+        shell: pwsh
+        run: |
+          if ('${{ github.event.inputs.skip_ingest || 'true' }}' -eq 'false') {
+            powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\run_mvp_smoke.ps1
+          }
+          else {
+            powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\run_mvp_smoke.ps1 -SkipIngest
+          }
