@@ -3,29 +3,45 @@ param(
     [switch]$SkipTests,
     [switch]$SkipIngest,
     [switch]$SkipVerifier,
-    [switch]$SkipOpsHealth
+    [switch]$SkipOpsHealth,
+    [string]$PythonExe
 )
 
 $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$pythonExe = Join-Path $repoRoot ".venv\Scripts\python.exe"
+$defaultPythonExe = Join-Path $repoRoot ".venv\Scripts\python.exe"
 
-if (-not (Test-Path $pythonExe)) {
-    throw "Python virtual environment not found at $pythonExe"
+if ([string]::IsNullOrWhiteSpace($PythonExe)) {
+    $PythonExe = $env:PYTHON_EXE
+}
+
+if ([string]::IsNullOrWhiteSpace($PythonExe) -and (Test-Path $defaultPythonExe)) {
+    $PythonExe = $defaultPythonExe
+}
+
+if ([string]::IsNullOrWhiteSpace($PythonExe)) {
+    $pythonCommand = Get-Command python -ErrorAction SilentlyContinue
+    if ($null -ne $pythonCommand) {
+        $PythonExe = $pythonCommand.Source
+    }
+}
+
+if ([string]::IsNullOrWhiteSpace($PythonExe)) {
+    throw "Python interpreter not found. Set PYTHON_EXE, pass -PythonExe, or create .venv\\Scripts\\python.exe"
 }
 
 Push-Location $repoRoot
 
 try {
-    Write-Host "Running MVP smoke checks from $repoRoot" -ForegroundColor Cyan
+    Write-Host "Running MVP smoke checks from $repoRoot using $PythonExe" -ForegroundColor Cyan
 
     $stepNumber = 1
     $stepTotal = 5
 
     if (-not $SkipCompile) {
         Write-Host "[$stepNumber/$stepTotal] Compile check" -ForegroundColor Yellow
-        & $pythonExe -m compileall simulator lambdas rag tests tools
+        & $PythonExe -m compileall simulator lambdas rag tests tools
         if ($LASTEXITCODE -ne 0) {
             throw "Compile check failed"
         }
@@ -34,7 +50,7 @@ try {
 
     if (-not $SkipTests) {
         Write-Host "[$stepNumber/$stepTotal] Unit tests" -ForegroundColor Yellow
-        & $pythonExe -m pytest -q
+        & $PythonExe -m pytest -q
         if ($LASTEXITCODE -ne 0) {
             throw "Unit tests failed"
         }
@@ -43,7 +59,7 @@ try {
 
     if (-not $SkipIngest) {
         Write-Host "[$stepNumber/$stepTotal] RAG document ingest" -ForegroundColor Yellow
-        & $pythonExe .\rag\ingest_documents.py
+        & $PythonExe .\rag\ingest_documents.py
         if ($LASTEXITCODE -ne 0) {
             throw "RAG ingest failed"
         }
@@ -52,7 +68,7 @@ try {
 
     if (-not $SkipVerifier) {
         Write-Host "[$stepNumber/$stepTotal] Databricks and assistant verifier" -ForegroundColor Yellow
-        & $pythonExe .\tools\mvp_verify.py
+        & $PythonExe .\tools\mvp_verify.py
         if ($LASTEXITCODE -ne 0) {
             throw "MVP verifier failed"
         }
@@ -61,7 +77,7 @@ try {
 
     if (-not $SkipOpsHealth) {
         Write-Host "[$stepNumber/$stepTotal] Operational health gate" -ForegroundColor Yellow
-        & $pythonExe .\tools\ops_health_check.py
+        & $PythonExe .\tools\ops_health_check.py
         if ($LASTEXITCODE -ne 0) {
             throw "Operational health gate failed"
         }
